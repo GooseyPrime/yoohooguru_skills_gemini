@@ -4,7 +4,15 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
+  const mapboxToken = process.env.VITE_MAPBOX_TOKEN || process.env.NEXT_PUBLIC_MAPBOX_TOKEN || process.env.MAPBOX_TOKEN || '';
+
   return {
+    envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
+    define: {
+      'import.meta.env.VITE_MAPBOX_TOKEN': JSON.stringify(mapboxToken),
+      'import.meta.env.NEXT_PUBLIC_MAPBOX_TOKEN': JSON.stringify(mapboxToken),
+      'process.env.NEXT_PUBLIC_MAPBOX_TOKEN': JSON.stringify(mapboxToken),
+    },
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

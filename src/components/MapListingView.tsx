@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { Guru } from '../types/index.ts';
+import { getTileLayerConfig } from '../lib/mapConfig.ts';
 import { MapPin, Star, Video, Compass, Navigation } from 'lucide-react';
 
 interface MapListingViewProps {
@@ -35,9 +36,17 @@ export const MapListingView: React.FC<MapListingViewProps> = ({
         attributionControl: false,
       });
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-      }).addTo(map);
+      const config = getTileLayerConfig('standard');
+      L.tileLayer(config.url, {
+        ...config.options,
+      })
+        .on('tileerror', () => {
+          L.tileLayer(config.fallbackUrl, {
+            subdomains: 'abcd',
+            maxZoom: 19,
+          }).addTo(map);
+        })
+        .addTo(map);
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
 
