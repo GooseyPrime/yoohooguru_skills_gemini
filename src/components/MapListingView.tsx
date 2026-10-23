@@ -71,7 +71,16 @@ export const MapListingView: React.FC<MapListingViewProps> = ({
       markersLayerRef.current = markersLayer;
 
       mapInstanceRef.current = map;
-    }
+
+      const resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      if (mapContainerRef.current) {
+        resizeObserver.observe(mapContainerRef.current);
+      }
+
+      setTimeout(() => map.invalidateSize(), 80);
+      setTimeout(() => map.invalidateSize(), 300);
 
     return () => {
       // Cleanup handled on unmount
@@ -190,7 +199,13 @@ export const MapListingView: React.FC<MapListingViewProps> = ({
   return (
     <div className="relative w-full h-[460px] md:h-[540px] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0f1523]">
       {/* Map surface container */}
-      <div ref={mapContainerRef} className="w-full h-full" tabIndex={0} aria-label="Interactive Local Gurus Map" />
+      <div
+        ref={mapContainerRef}
+        style={{ height: '540px', minHeight: '440px', width: '100%', position: 'relative' }}
+        className="w-full h-full relative z-10"
+        tabIndex={0}
+        aria-label="Interactive Local Gurus Map"
+      />
 
       {/* Floating Map HUD overlay */}
       <div className="absolute top-4 left-4 z-20 bg-[#0b0f17]/90 backdrop-blur-xl px-4 py-2.5 rounded-2xl border border-slate-800 shadow-xl flex items-center gap-3 text-xs">
